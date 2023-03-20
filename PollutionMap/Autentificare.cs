@@ -92,5 +92,46 @@ namespace PollutionMap
         {
 
         }
+
+        private bool existaUtilizator()
+        {
+            this.utilizatoriTableAdapter.Fill(this.poluareDataSet.Utilizatori);
+            using (this.utilizatoriTableAdapter)
+            {
+                foreach(DataRowView row in utilizatoriBindingSource.List)
+                {
+                    string nume = (string)row["NumeUtilizator"];
+                    string parola = (string)row["Parola"];
+                    if (nume.ToString().Trim() == textBox1.Text.Trim() && parola.ToString().Trim() == maskedTextBox1.Text.Trim())
+                    {
+                        int iduti = Convert.ToInt32(row["IdUtilizator"]);
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            return false;
+        }
+        private void label1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Inregistrare inreg = new Inregistrare();
+            inreg.Show();
+            this.Hide();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (existaUtilizator()==true)
+            {
+                MessageBox.Show("Te-ai logat cu succes!");
+
+            }
+            else MessageBox.Show("Cont invalid!");
+        }
     }
 }
