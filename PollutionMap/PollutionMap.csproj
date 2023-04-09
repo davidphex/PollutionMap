@@ -65,6 +65,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdaugaMasurare.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdaugaMasurare.Designer.cs">
+      <DependentUpon>AdaugaMasurare.cs</DependentUpon>
+    </Compile>
     <Compile Include="Autentificare.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +105,9 @@
     <Compile Include="Vizualizare.Designer.cs">
       <DependentUpon>Vizualizare.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AdaugaMasurare.resx">
+      <DependentUpon>AdaugaMasurare.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Autentificare.resx">
       <DependentUpon>Autentificare.cs</DependentUpon>
     </EmbeddedResource>

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,6 +28,10 @@ namespace PollutionMap
         private int n = 0; // nr de  puncte
 
         double[] vm = new double[100]; //valori masurate coresp. punctelor
+
+        private int xc, yc, xmouse, ymouse; //coord punctului si coord mouseului
+
+        double valm,valpc;
              
         public Vizualizare()
         {
@@ -40,9 +46,25 @@ namespace PollutionMap
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             ds = DateTime.Now;
             g1 = this.pictureBox1.CreateGraphics();
+            g2 = this.pictureBox1.CreateGraphics();
 
             AfisareHarta();
 
+        }
+
+        private bool ExistaUnPunctPeHarta(int x, int y)
+        {
+            for (int i=1; i<=n; i++)
+            {
+                if (Math.Abs(x - pozX[i]) <= 20 && Math.Abs(y - pozY[i]) <= 20)
+                {
+                    xc = pozX[i];
+                    yc = pozY[i];
+                    valpc = vm[i];
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void AfisareHarta()
@@ -126,6 +148,48 @@ namespace PollutionMap
         private void button1_Click(object sender, EventArgs e)
         {
             OperatiiAfisare();
+        }
+
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            xmouse = e.X;
+            ymouse = e.Y;
+            if (ExistaUnPunctPeHarta(xmouse, ymouse) == true)
+                MessageBox.Show("Punctul exista pe harta! Alege un alt punct pentru a fi adaugat pe harta!");
+            else
+            {
+                AdaugaMasurare f4 = new AdaugaMasurare();
+                f4.ShowDialog();
+                valm = f4.ValoareMasurare;
+
+                MessageBox.Show(Convert.ToString("Se pune punctul avand valoarea: ") + valm);
+                Brush b;
+                if (valm < 20) b = Brushes.LightGreen;
+                else if (valm <= 40) b = Brushes.Yellow;
+                else b = Brushes.IndianRed;
+                desenare(g1, b, xmouse, ymouse, valm);
+                this.masurareTableAdapter.InsertMasurare(
+                    idHarta, 
+                    xmouse, 
+                    ymouse, 
+                    (float)valm, 
+                    Convert.ToDateTime(dateTimePicker1.Text)
+                );
+
+                this.masurareTableAdapter.Fill(this.poluareDataSet.Masurare);
+                this.masurareTableAdapter.Update(this.poluareDataSet.Masurare);
+
+            }
+        }
+
+        private void Vizualizare_MouseClick(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void button2_Click(object sender, EventArgs e)
