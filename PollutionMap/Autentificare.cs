@@ -107,7 +107,6 @@ namespace PollutionMap
                         int iduti = Convert.ToInt32(row["IdUtilizator"]);
                         return true;
                     }
-                    return false;
                 }
             }
             return false;
@@ -128,8 +127,10 @@ namespace PollutionMap
         {
             if (existaUtilizator()==true)
             {
-                MessageBox.Show("Te-ai logat cu succes!");
-
+                //MessageBox.Show("Te-ai logat cu succes!");
+                Vizualizare f3 = new Vizualizare();
+                f3.Show();
+                this.Hide();
             }
             else MessageBox.Show("Cont invalid!");
         }
