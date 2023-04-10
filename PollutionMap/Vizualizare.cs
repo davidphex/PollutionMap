@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace PollutionMap
 {
@@ -27,11 +29,16 @@ namespace PollutionMap
         private int[] pozY = new int[100]; // vector pt coord y ale punctelor
         private int n = 0; // nr de  puncte
 
-        double[] vm = new double[100]; //valori masurate coresp. punctelor
+        private double[] vm = new double[100]; //valori masurate coresp. punctelor
 
         private int xc, yc, xmouse, ymouse; //coord punctului si coord mouseului
 
-        double valm,valpc;
+        private double valm; //valoarea care va fi inserata
+        
+        private double valpc=0,valmax1=0,valmax2=0; //valoarea punctului selectat, primele 2 valori maxime
+        private int xmax1, ymax1, xmax2, ymax2; //coordonatele punctelor avand valoare maxima
+        private double d1, d2, d3, lungimeTraseu = 0; // distantele intre punctul curent si punctele de valori maxime
+        //si distanta intre cele doua maxime si la final in d1 si d2 vom retine distantele maxime
              
         public Vizualizare()
         {
@@ -46,9 +53,10 @@ namespace PollutionMap
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             ds = DateTime.Now;
             g1 = this.pictureBox1.CreateGraphics();
-            g2 = this.pictureBox1.CreateGraphics();
+            g2 = this.pictureBox2.CreateGraphics();
 
-            AfisareHarta();
+            AfisareHarta(pictureBox1);
+            AfisareHarta(pictureBox2);
 
         }
 
@@ -67,32 +75,83 @@ namespace PollutionMap
             return false;
         }
 
-        private void AfisareHarta()
+        private void DesenareLinie(int x1, int y1, int x2, int y2)
+        {
+            g2.DrawLine(new Pen(Color.Red, 3), x1, y1, x2, y2);
+        }
+
+        private void DeterminareDistante()
+        {
+            d1 = Math.Sqrt(Math.Pow(xc - xmax1, 2) + Math.Pow(yc - ymax1, 2));
+            d2 = Math.Sqrt(Math.Pow(xc - xmax2, 2) + Math.Pow(yc - ymax2, 2));
+            d3 = Math.Sqrt(Math.Pow(xmax1 - xmax2, 2) + Math.Pow(ymax1 - ymax2, 2));
+
+            if(d1<=d3 && d2 <= d3)
+            {
+                lungimeTraseu = d1 + d2;
+                DesenareLinie(xmax1, ymax1, xc, yc);
+                DesenareLinie(xc, yc, xmax2, ymax2);
+                MessageBox.Show(
+                    "(" + Convert.ToString(xmax1) + "," + Convert.ToString(ymax1) + ")\n" +
+                    "(" + Convert.ToString(xc) + "," + Convert.ToString(yc) + ")\n" +
+                    "(" + Convert.ToString(xmax2) + "," + Convert.ToString(ymax2) + ")\n" +
+                    "Lungimea traseului minim este:" + 
+                        Convert.ToString(d1)+ "+" +Convert.ToString(d2)+ "=" +Convert.ToString(lungimeTraseu)
+                );
+            } else if(d1<=d2 && d3<=d2)
+            {
+                lungimeTraseu = d1 + d3;
+                DesenareLinie(xc, yc, xmax1, ymax1);
+                DesenareLinie(xmax1, ymax1, xmax2, ymax2);
+
+                MessageBox.Show(
+                    "(" + Convert.ToString(xc) + "," + Convert.ToString(yc) + ")\n" +
+                    "(" + Convert.ToString(xmax1) + "," + Convert.ToString(ymax1) + ")\n" +
+                    "(" + Convert.ToString(xmax2) + "," + Convert.ToString(ymax2) + ")\n" +
+                    "Lungimea traseului minim este:" +
+                        Convert.ToString(d1) + "+" + Convert.ToString(d3) + "=" + Convert.ToString(lungimeTraseu)
+                );
+            } else if(d2<=d1 && d3 <= d1)
+            {
+                lungimeTraseu = d2 + d3;
+                DesenareLinie(xc, yc, xmax2, ymax2);
+                DesenareLinie(xmax2, ymax2, xmax1, xmax2);
+                MessageBox.Show(
+                    "(" + Convert.ToString(xc) + "," + Convert.ToString(yc) + ")\n" +
+                    "(" + Convert.ToString(xmax1) + "," + Convert.ToString(ymax1) + ")\n" +
+                    "(" + Convert.ToString(xmax2) + "," + Convert.ToString(ymax2) + ")\n" +
+                    "Lungimea traseului minim este:" +
+                        Convert.ToString(d2) + "+" + Convert.ToString(d3) + "=" + Convert.ToString(lungimeTraseu)
+                );
+            }
+        }
+
+        private void AfisareHarta(PictureBox pictureBox)
         {
             switch (s)
             {
                 case "Harta Bucuresti":
-                    pictureBox1.Image = Image.FromFile(path+"harta_bucuresti.png");
+                    pictureBox.Image = Image.FromFile(path+"harta_bucuresti.png");
                     idHarta = 1;
                     break;
                 case "Harta Cluj-Napoca":
-                    pictureBox1.Image = Image.FromFile(path+"harta_cluj.png");
+                    pictureBox.Image = Image.FromFile(path+"harta_cluj.png");
                     idHarta = 2;
                     break;
                 case "Harta Constanta":
-                    pictureBox1.Image = Image.FromFile(path+"harta_constanta.png");
+                    pictureBox.Image = Image.FromFile(path+"harta_constanta.png");
                     idHarta = 3;
                     break;
                 case "Harta Iasi":
-                    pictureBox1.Image = Image.FromFile(path+"harta_iasi.png");
+                    pictureBox.Image = Image.FromFile(path+"harta_iasi.png");
                     idHarta = 4;
                     break;
                 case "Harta Sibiu":
-                    pictureBox1.Image = Image.FromFile(path+"harta_sibiu.png");
+                    pictureBox.Image = Image.FromFile(path+"harta_sibiu.png");
                     idHarta = 5;
                     break;
                 case "":
-                    pictureBox1.Image = Image.FromFile(path + "default_harta.png");
+                    pictureBox.Image = Image.FromFile(path + "default_harta.png");
                     idHarta = 0;
                     break;
             }
@@ -112,6 +171,53 @@ namespace PollutionMap
                     px-10,
                     py-10
                 );
+            }
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox2_MouseClick(object sender, MouseEventArgs e)
+        {
+            xmouse = e.X;
+            ymouse = e.Y;
+
+            if (ExistaUnPunctPeHarta(xmouse, ymouse) == true)
+            {
+                if (valpc <= 40)
+                {
+                    MessageBox.Show(
+                        "Selectati un punct de pe harta corespunzator \n" +
+                        "unei masuri existente in baza de date!(valoare > 40)"
+                    );
+                }
+                else
+                {
+                    DeterminareDistante();
+                }
+            }
+            else MessageBox.Show("Selectati un punct de pe harta!");
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 1)
+            {
+                AfisareHarta(pictureBox2);
+                if(idHarta>=1 && idHarta <= 5)
+                {
+                    MessageBox.Show("Se incarca valorile din pagina VeziHarta");
+                    AfisareValori(g2);
+
+                } else
+                {
+                    MessageBox.Show("Harta din pagina VeziHarta nu a fost incarcata");
+                }
+            } else
+            {
+                OperatiiAfisare();
             }
         }
 
@@ -140,6 +246,22 @@ namespace PollutionMap
                             desenare(g, Brushes.Yellow, pozX[n], pozY[n], vm[n]);
                         else if ((filtru == 4 || filtru == 1) && vm[n] > 40)
                             desenare(g, Brushes.IndianRed, pozX[n], pozY[n], vm[n]);
+
+
+                        if (vm[n] >= valmax1)
+                        {
+                            valmax2 = valmax1;
+                            xmax2 = xmax1;
+                            ymax2 = ymax1;
+
+                            valmax1 = vm[n];
+                            xmax1 = pozX[n];
+                            ymax1 = pozY[n];
+                        } else if (vm[n] > valmax2) {
+                            valmax2 = vm[n];
+                            xmax2 = pozX[n];
+                            ymax2 = pozY[n];
+                        }
                     }
                 }
             }
@@ -192,6 +314,16 @@ namespace PollutionMap
 
         }
 
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Traseu_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
             filtru = 1;
@@ -234,7 +366,8 @@ namespace PollutionMap
 
         private void OperatiiAfisare()
         {
-            AfisareHarta();
+            AfisareHarta(pictureBox1);
+            AfisareHarta(pictureBox2);
             if(idHarta>=1 && idHarta <= 5)
             {
                 this.Refresh();

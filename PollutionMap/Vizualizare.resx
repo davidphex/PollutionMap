@@ -138,4 +138,11 @@
   <metadata name="masurareBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>639, 17</value>
   </metadata>
+  <data name="label4.Text" xml:space="preserve">
+    <value>Alege cu mouse-ul un punct de pe harta care sa
+corespunda unei masurari existente in baza de date ca punct de plecare pentru
+desenarea traseului de lungime minima, care sa treaca o singura data prin cele
+mai poluate 2 puncte desenate pe harta !
+</value>
+  </data>
 </root>

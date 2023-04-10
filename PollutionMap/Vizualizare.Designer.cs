@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Vizualizare));
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.hartiBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.poluareDataSet = new PollutionMap.PoluareDataSet();
@@ -47,12 +48,16 @@
             this.Traseu = new System.Windows.Forms.TabPage();
             this.masurareTableAdapter = new PollutionMap.PoluareDataSetTableAdapters.MasurareTableAdapter();
             this.masurareBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label4 = new System.Windows.Forms.Label();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.hartiBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.poluareDataSet)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.VeziHarta.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.Traseu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.masurareBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBox1
@@ -89,6 +94,7 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1028, 557);
             this.tabControl1.TabIndex = 1;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // VeziHarta
             // 
@@ -208,6 +214,8 @@
             // 
             // Traseu
             // 
+            this.Traseu.Controls.Add(this.pictureBox2);
+            this.Traseu.Controls.Add(this.label4);
             this.Traseu.Location = new System.Drawing.Point(4, 22);
             this.Traseu.Name = "Traseu";
             this.Traseu.Padding = new System.Windows.Forms.Padding(3);
@@ -225,6 +233,28 @@
             this.masurareBindingSource.DataMember = "Masurare";
             this.masurareBindingSource.DataSource = this.poluareDataSet;
             // 
+            // label4
+            // 
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(7, 20);
+            this.label4.Margin = new System.Windows.Forms.Padding(0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(347, 480);
+            this.label4.TabIndex = 0;
+            this.label4.Text = resources.GetString("label4.Text");
+            this.label4.Click += new System.EventHandler(this.label4_Click);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Location = new System.Drawing.Point(372, 20);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(640, 480);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox2.TabIndex = 2;
+            this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            this.pictureBox2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseClick);
+            // 
             // Vizualizare
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -241,7 +271,9 @@
             this.VeziHarta.ResumeLayout(false);
             this.VeziHarta.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.Traseu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.masurareBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -266,5 +298,7 @@
         private System.Windows.Forms.Button button1;
         private PoluareDataSetTableAdapters.MasurareTableAdapter masurareTableAdapter;
         private System.Windows.Forms.BindingSource masurareBindingSource;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }
